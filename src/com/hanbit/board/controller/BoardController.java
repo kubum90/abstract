@@ -13,13 +13,12 @@ public class BoardController {
 			case "0":
 				return;
 			case "1":
-				String [] arr = JOptionPane.showInputDialog("seq/writer/title/content/regdate").split("/");
+				String [] arr = JOptionPane.showInputDialog("writer/title/content/regdate").split("/");
 				board = new BoardBean();
-				board.setSeq(Integer.parseInt(arr[0]));
-				board.setWriter(arr[1]);
-				board.setTitle(arr[2]);
-				board.setContent(arr[3]);
-				board.setRegDate(arr[4]);
+				board.setWriter(arr[0]);
+				board.setTitle(arr[1]);
+				board.setContent(arr[2]);
+				board.setRegDate(arr[3]);
 				service.writeBoard(board);
 				JOptionPane.showMessageDialog(null, "추가하였습니다.");
 				break;
@@ -27,44 +26,40 @@ public class BoardController {
 				JOptionPane.showMessageDialog(null, service.countBoard());
 				break;
 			case "3":
-				String sList="";
-				BoardBean[] list = service.getList();
-				for(int i=0; i<service.countBoard(); i++){
-					sList+=list[i].toString()+"\n";
-				}
-				
-				JOptionPane.showMessageDialog(null,sList);
+				 String sList="";
+				 BoardBean[] list = service.getList();
+                 for(int i=0; i<service.countBoard(); i++){
+                       sList+=list[i].toString();
+                 }
+                 JOptionPane.showMessageDialog(null,sList);
 				break;
 			case "4":
 				int seqCount= Integer.parseInt(JOptionPane.showInputDialog("seq?"));
-				
-				JOptionPane.showMessageDialog(null, service.findBySeq(seqCount).toString());
+				JOptionPane.showMessageDialog(null, service.findBySeq(seqCount));
 				break;
 			case "5":
 				String findName = JOptionPane.showInputDialog("name?");
-				BoardBean[] list1=service.findByWriter(findName);
+				BoardBean[] findWriter=service.findByWriter(findName);
 				String result="";
 				if(findName.length()==0){
 					result="찾고자 하는 게시자가 없습니다.";
 				}else{
-					for(int i=0; i<list1.length;i++){
-						result+=list1[i].toString();
+					for(int i=0; i<findWriter.length;i++){
+						result+=findWriter[i].toString();
 					}
 				}
 				JOptionPane.showMessageDialog(null, result);
 				break;
-			
 			case "6":
-				String[] update = JOptionPane.showInputDialog("title/content").split("/");
 				board = new BoardBean();
-				board.setTitle(update[0]);
-				board.setContent(update[1]);
-				board.setWriter(update[2]);
+				String seqContent = JOptionPane.showInputDialog("seq/content");
+				String[] seqC=seqContent.split("/");
+				board.setSeq(Integer.parseInt(seqC[0]));
+				board.setContent(seqC[1]);
 				service.updateContent(board);
-				JOptionPane.showMessageDialog(null, "update success!!");
 				break;
 			case "7":
-				String deleteContent = JOptionPane.showInputDialog("삭제할 아이디를 입력하세요");
+				int deleteContent = Integer.parseInt(JOptionPane.showInputDialog("삭제할 seq 입력하세요"));
 				service.delete(deleteContent);
 				JOptionPane.showMessageDialog(null, "삭제완료하였습니다.");
 				break;

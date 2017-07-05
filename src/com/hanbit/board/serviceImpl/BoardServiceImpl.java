@@ -4,32 +4,32 @@ import com.hanbit.board.service.BoardService;
 public class BoardServiceImpl implements BoardService{
 	BoardBean board;
 	BoardBean[] list;
-	int seq;
+	int count,seq;
 	public BoardServiceImpl(){
-		seq =0;
+		count =0;
 		board = new BoardBean();
-		list = new BoardBean[seq];
+		list = new BoardBean[count];
 	}
 	@Override
 	public void writeBoard(BoardBean board) {
-		if(seq==list.length){
-			BoardBean[] temp = new BoardBean[seq+1];
-			System.arraycopy(list, 0, temp, 0, seq);
+		seq++;
+		if(count==list.length){
+			BoardBean[] temp = new BoardBean[count+1];
+			System.arraycopy(list, 0, temp, 0, count);
 			list = temp;
+		board.setSeq(seq);
 		}
-		list[seq++]=board;
+		list[count++]=board;
 	}
-	
 	@Override
 	public BoardBean[] getList(){
-		if(seq!=list.length){
-			BoardBean[] temp = new BoardBean[seq-1];
-			System.arraycopy(list, 0, temp, 0, seq-1);
+		if(count!=list.length){
+			BoardBean[] temp = new BoardBean[count-1];
+			System.arraycopy(list, 0, temp, 0, count-1);
 			list = temp;
 		}
 		return list;
 	}
-
 	@Override
 	public BoardBean findBySeq(int param) {
 		board = new BoardBean();
@@ -38,33 +38,47 @@ public class BoardServiceImpl implements BoardService{
 				board = list[i];
 			}
 		}
-		
 		return board;
 	}
-
 	@Override
 	public BoardBean[] findByWriter(String writer) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-
+		int x=0;
+		for(int i=0; i<list.length; i++){
+			if(writer.equals(list[i].getWriter())){
+				x++;
+			}
+		}
+			BoardBean[] bords = new BoardBean[x];
+			int j=0;
+			for(int i=0; i<list.length; i++){
+				if(writer.equals(list[i].getWriter())){
+					bords[j]=list[i];
+					j++;
+				}
+				if(x==j){
+					break;
+				}
+			}
+			return bords;
+		}
 	@Override
-	public void updateContent(BoardBean board) {
-		// TODO Auto-generated method stub
-		
+	public void updateContent(BoardBean bean) {
+		board = findBySeq(bean.getSeq());
+		board.setContent(bean.getContent());
 	}
-
 	@Override
-	public void delete(String content) {
-		// TODO Auto-generated method stub
-		
+	public void delete(int seq) {
+		for(int i=0; i<list.length; i++){
+			if(seq==list[i].getSeq()){
+				list[i]=list[count-1];
+			}
+		}
+		list[count-1]=null;
+		count--;
 	}
 	@Override
 	public int countBoard() {
 		// TODO Auto-generated method stub
-		return seq;
+		return count;
 	}
-
 }
